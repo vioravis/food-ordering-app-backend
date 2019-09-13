@@ -1,9 +1,9 @@
 package com.upgrad.FoodOrderingApp.service.businness;
 
 
-import com.upgrad.FoodOrderingApp.service.dao.UserDao;
-import com.upgrad.FoodOrderingApp.service.entity.UserAuthTokenEntity;
-import com.upgrad.FoodOrderingApp.service.entity.UserEntity;
+import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminBusinessService {
 
     @Autowired
-    private UserDao userDao;
+    private CustomerDao customerDao;
 
     /**
      * delete user
@@ -33,28 +33,28 @@ public class AdminBusinessService {
 
     //Method for creating a user...used during signup
     @Transactional(propagation = Propagation.REQUIRED)
-    public UserEntity createUser(final UserEntity userEntity) throws SignUpRestrictedException {
+    public CustomerEntity createCustomer(final CustomerEntity customerEntity) throws SignUpRestrictedException {
 
-        UserEntity user = userDao.getUserByUserName(userEntity.getUserName());
+        CustomerEntity customer = customerDao.getCustomerByCustomerName(customerEntity.getCustomerName());
 
         // Check if username already exists
-        if(user != null) {
+        if(customer != null) {
             throw new SignUpRestrictedException("SGR-001","Try any other Username, this Username has already been taken");
         }
 
         // Check if email already exists
-        UserEntity userEmail = userDao.getUserByEmail(userEntity.getEmail());
+        CustomerEntity customerEmail = customerDao.getCustomerByEmail(customerEntity.getEmail());
 
-        if(userEmail != null) {
+        if(customerEmail != null) {
             throw new SignUpRestrictedException("SGR-002","This user has already been registered, try with any other emailId");
         }
 
         //Encrypt password and add salt
-        String[] encryptedText = cryptographyProvider.encrypt(userEntity.getPassword());
-        userEntity.setSalt(encryptedText[0]);
-        userEntity.setPassword(encryptedText[1]);
+        String[] encryptedText = cryptographyProvider.encrypt(customerEntity.getPassword());
+        customerEntity.setSalt(encryptedText[0]);
+        customerEntity.setPassword(encryptedText[1]);
 
-        return userDao.createUser(userEntity);
+        return customerDao.createCustomer(customerEntity);
 
     }
 }

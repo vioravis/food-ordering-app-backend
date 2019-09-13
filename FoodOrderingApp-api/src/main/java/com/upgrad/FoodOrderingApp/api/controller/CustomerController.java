@@ -5,9 +5,9 @@ import com.upgrad.FoodOrderingApp.api.model.LogoutResponse;
 import com.upgrad.FoodOrderingApp.api.model.SignupCustomerRequest;
 import com.upgrad.FoodOrderingApp.api.model.SignupCustomerResponse;
 import com.upgrad.FoodOrderingApp.service.businness.AuthenticationService;
-import com.upgrad.FoodOrderingApp.service.businness.CustomerBusinessService;
-import com.upgrad.FoodOrderingApp.service.entity.UserAuthTokenEntity;
-import com.upgrad.FoodOrderingApp.service.entity.UserEntity;
+import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
@@ -30,22 +30,22 @@ import java.util.UUID;
 public class CustomerController {
 
     @Autowired
-    private CustomerBusinessService customerBusinessService;
+    private CustomerService customerService;
 
     // Signup Method
     @RequestMapping(method = RequestMethod.POST, path = "/customer/signup", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignupCustomerResponse> signup(final SignupCustomerRequest signupCustomerRequest) throws SignUpRestrictedException {
-        final UserEntity userEntity = new UserEntity();
-        userEntity.setUuid(UUID.randomUUID().toString());
-        userEntity.setFirstName(signupCustomerRequest.getFirstName());
-        userEntity.setLastName(signupCustomerRequest.getLastName());
-        userEntity.setEmail(signupCustomerRequest.getEmailAddress());
-        userEntity.setPassword(signupCustomerRequest.getPassword());
-        userEntity.setContactNumber(signupCustomerRequest.getContactNumber());
-        userEntity.setRole("nonadmin");
-        userEntity.setSalt("1234abc");
+        final CustomerEntity customerEntity = new CustomerEntity();
+        customerEntity.setUuid(UUID.randomUUID().toString());
+        customerEntity.setFirstName(signupCustomerRequest.getFirstName());
+        customerEntity.setLastName(signupCustomerRequest.getLastName());
+        customerEntity.setEmail(signupCustomerRequest.getEmailAddress());
+        customerEntity.setPassword(signupCustomerRequest.getPassword());
+        customerEntity.setContactNumber(signupCustomerRequest.getContactNumber());
+        customerEntity.setRole("nonadmin");
+        customerEntity.setSalt("1234abc");
 
-        final UserEntity createdUserEntity = customerBusinessService.signup(userEntity);
+        final CustomerEntity createdUserEntity = customerService.signup(customerEntity);
 
         //Status for successful user creation
         SignupCustomerResponse signupCustomerResponse = new SignupCustomerResponse().id(createdUserEntity.getUuid()).status("USER SUCCESSFULLY REGISTERED");
@@ -65,14 +65,14 @@ public class CustomerController {
         String decodedText = new String(decode);
         String[] decodedArray = decodedText.split(":");
 
-        UserAuthTokenEntity userAuthToken = authenticationService.authenticate(decodedArray[0],decodedArray[1]);
-        UserEntity user = userAuthToken.getUser();
+        CustomerAuthTokenEntity customerAuthToken = authenticationService.authenticate(decodedArray[0],decodedArray[1]);
+        CustomerEntity customer = customerAuthToken.getCustomer();
 
         // Message for successful Login
-        LoginResponse loginResponse = new LoginResponse().id(user.getUuid()).message("SIGNED IN SUCCESSFULLY");
+        LoginResponse loginResponse = new LoginResponse().id(customer.getUuid()).message("SIGNED IN SUCCESSFULLY");
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("access-token",userAuthToken.getAccessToken());
+        headers.add("access-token",customerAuthToken.getAccessToken());
 
         return new ResponseEntity<LoginResponse>(loginResponse,headers, HttpStatus.OK);
 
@@ -82,10 +82,10 @@ public class CustomerController {
     // Logout method
     @RequestMapping(method=RequestMethod.POST,path="/user/logout",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<LogoutResponse> logout(@RequestHeader("authorization") final String authorization) throws AuthorizationFailedException {
-        final UserEntity userEntity = customerBusinessService.Logout(authorization);
+        final CustomerEntity customerEntity = customerService.Logout(authorization);
 
         //Message for successful Logout
-        LogoutResponse logoutResponse = new LogoutResponse().id(userEntity.getUuid()).message("SIGNED OUT SUCCESSFULLY");
+        LogoutResponse logoutResponse = new LogoutResponse().id(customerEntity.getUuid()).message("SIGNED OUT SUCCESSFULLY");
 
         return new ResponseEntity<LogoutResponse>(logoutResponse,HttpStatus.OK);
 
