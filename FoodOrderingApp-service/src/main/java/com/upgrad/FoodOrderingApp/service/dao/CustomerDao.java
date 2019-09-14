@@ -42,9 +42,9 @@ public class CustomerDao {
     }
 
     // Get user by Username
-    public CustomerEntity getCustomerByCustomerName(final String customerName) {
+    public CustomerEntity getCustomerByContactNumber(final String contactNumber) {
         try {
-            return entityManager.createNamedQuery("customerByCustomerName", CustomerEntity.class).setParameter("customerName", customerName).getSingleResult();
+            return entityManager.createNamedQuery("customerByContactNumber", CustomerEntity.class).setParameter("contactNumber", contactNumber).getSingleResult();
         } catch (NoResultException nre) {
             return null;
         }

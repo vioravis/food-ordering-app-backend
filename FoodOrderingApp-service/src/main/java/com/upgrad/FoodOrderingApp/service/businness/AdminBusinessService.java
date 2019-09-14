@@ -35,11 +35,11 @@ public class AdminBusinessService {
     @Transactional(propagation = Propagation.REQUIRED)
     public CustomerEntity createCustomer(final CustomerEntity customerEntity) throws SignUpRestrictedException {
 
-        CustomerEntity customer = customerDao.getCustomerByCustomerName(customerEntity.getCustomerName());
+        CustomerEntity customer = customerDao.getCustomerByContactNumber(customerEntity.getContactNumber());
 
         // Check if username already exists
         if(customer != null) {
-            throw new SignUpRestrictedException("SGR-001","Try any other Username, this Username has already been taken");
+            throw new SignUpRestrictedException("SGR-001","his contact number is already registered! Try other contact number.");
         }
 
         // Check if email already exists

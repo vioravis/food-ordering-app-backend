@@ -42,7 +42,7 @@ public class CustomerController {
         customerEntity.setEmail(signupCustomerRequest.getEmailAddress());
         customerEntity.setPassword(signupCustomerRequest.getPassword());
         customerEntity.setContactNumber(signupCustomerRequest.getContactNumber());
-        customerEntity.setRole("nonadmin");
+
         customerEntity.setSalt("1234abc");
 
         final CustomerEntity createdUserEntity = customerService.signup(customerEntity);
@@ -82,7 +82,7 @@ public class CustomerController {
     // Logout method
     @RequestMapping(method=RequestMethod.POST,path="/user/logout",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<LogoutResponse> logout(@RequestHeader("authorization") final String authorization) throws AuthorizationFailedException {
-        final CustomerEntity customerEntity = customerService.Logout(authorization);
+        final CustomerEntity customerEntity = customerService.logout(authorization);
 
         //Message for successful Logout
         LogoutResponse logoutResponse = new LogoutResponse().id(customerEntity.getUuid()).message("SIGNED OUT SUCCESSFULLY");

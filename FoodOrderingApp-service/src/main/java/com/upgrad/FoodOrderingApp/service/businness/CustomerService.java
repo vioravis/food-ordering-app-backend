@@ -32,7 +32,7 @@ public class CustomerService {
 
     // Service method for signout
     @Transactional(propagation = Propagation.REQUIRED)
-    public CustomerEntity Logout(final String authorizationToken) throws AuthorizationFailedException {
+    public CustomerEntity logout(final String authorizationToken) throws AuthorizationFailedException {
         return authenticationService.userLogout(authorizationToken);
     }
 

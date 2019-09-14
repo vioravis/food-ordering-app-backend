@@ -16,7 +16,7 @@ import java.io.Serializable;
         {
                 @NamedQuery(name = "customerByUuid", query = "select u from CustomerEntity u where u.uuid = :uuid"),
                 @NamedQuery(name = "customerByEmail", query = "select u from CustomerEntity u where u.email =:email"),
-                @NamedQuery(name = "customerByCustomerName", query = "select u from CustomerEntity u where u.customerName =:customerName")
+                @NamedQuery(name = "customerByContactNumber", query = "select u from CustomerEntity u where u.contactNumber =:contactNumber")
         }
 )
 
@@ -42,11 +42,6 @@ public class CustomerEntity implements Serializable {
     @Size(max = 30)
     private String lastName;
 
-    @Column(name = "customername")
-    @NotNull
-    @Size(max = 30)
-    private String customerName;
-
     @Column(name = "email")
     @NotNull
     @Size(max = 50)
@@ -62,23 +57,7 @@ public class CustomerEntity implements Serializable {
     //@ToStringExclude
     private String salt;
 
-    @Column(name = "country")
-    @Size(max = 30)
-    private String country;
-
-    @Column(name = "aboutme")
-    @Size(max = 50)
-    private String aboutme;
-
-    @Column(name = "dob")
-    @Size(max = 30)
-    private String dob;
-
-    @Column(name = "role")
-    @Size(max = 30)
-    private String role;
-
-    @Column(name = "contactnumber")
+    @Column(name = "contact_number")
     @Size(max = 30)
     private String contactNumber;
 
@@ -119,14 +98,6 @@ public class CustomerEntity implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getCustomerName() {
-        return customerName;
-    }
-
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -149,38 +120,6 @@ public class CustomerEntity implements Serializable {
 
     public void setSalt(String salt) {
         this.salt = salt;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getAboutme() {
-        return aboutme;
-    }
-
-    public void setAboutme(String aboutme) {
-        this.aboutme = aboutme;
-    }
-
-    public String getDob() {
-        return dob;
-    }
-
-    public void setDob(String dob) {
-        this.dob = dob;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
     }
 
     public String getContactNumber() {
