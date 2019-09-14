@@ -48,7 +48,7 @@ public class CustomerController {
         final CustomerEntity createdUserEntity = customerService.signup(customerEntity);
 
         //Status for successful user creation
-        SignupCustomerResponse signupCustomerResponse = new SignupCustomerResponse().id(createdUserEntity.getUuid()).status("USER SUCCESSFULLY REGISTERED");
+        SignupCustomerResponse signupCustomerResponse = new SignupCustomerResponse().id(createdUserEntity.getUuid()).status("CUSTOMER SUCCESSFULLY REGISTERED");
         return new ResponseEntity<SignupCustomerResponse>(signupCustomerResponse, HttpStatus.CREATED);
     }
 

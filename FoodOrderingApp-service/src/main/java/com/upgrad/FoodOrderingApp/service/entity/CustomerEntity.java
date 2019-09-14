@@ -38,7 +38,6 @@ public class CustomerEntity implements Serializable {
     private String firstName;
 
     @Column(name = "lastname")
-    @NotNull
     @Size(max = 30)
     private String lastName;
 
@@ -49,6 +48,7 @@ public class CustomerEntity implements Serializable {
 
     //@ToStringExclude
     @Column(name = "password")
+    @NotNull
     private String password;
 
     @Column(name = "salt")
@@ -58,7 +58,8 @@ public class CustomerEntity implements Serializable {
     private String salt;
 
     @Column(name = "contact_number")
-    @Size(max = 30)
+    @Size(min=10,max = 10)
+    @NotNull
     private String contactNumber;
 
     @Override
