@@ -60,19 +60,32 @@ public class CustomerController {
     @RequestMapping(method = RequestMethod.POST,path = "/customer/login",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<LoginResponse> login(@RequestHeader("authorization") final String authorization) throws AuthenticationFailedException {
 
+        if(!(authorization.split("\\s+"))[0].equals("Basic")){
+            throw new AuthenticationFailedException("ATH-003","Incorrect format of decoded customer name and password");
+        }
+
         byte[] decode= Base64.getDecoder().decode(authorization.split("Basic ")[1]);
 
         String decodedText = new String(decode);
+
+        if(decodedText.split(":").length !=2 ){
+            throw new AuthenticationFailedException("ATH-003","Incorrect format of decoded customer name and password");
+        }
+
         String[] decodedArray = decodedText.split(":");
 
         CustomerAuthTokenEntity customerAuthToken = authenticationService.authenticate(decodedArray[0],decodedArray[1]);
         CustomerEntity customer = customerAuthToken.getCustomer();
 
         // Message for successful Login
-        LoginResponse loginResponse = new LoginResponse().id(customer.getUuid()).message("SIGNED IN SUCCESSFULLY");
+        LoginResponse loginResponse = new LoginResponse().id(customer.getUuid()).firstName(customer.getFirstName()).
+                                          lastName(customer.getLastName()).
+                                          emailAddress(customer.getEmail()).
+                                          contactNumber(customer.getContactNumber()).message("LOGGED IN SUCCESSFULLY");
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("access-token",customerAuthToken.getAccessToken());
+
 
         return new ResponseEntity<LoginResponse>(loginResponse,headers, HttpStatus.OK);
 

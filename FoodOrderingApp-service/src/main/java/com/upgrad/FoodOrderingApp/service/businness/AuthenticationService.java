@@ -29,7 +29,7 @@ public class AuthenticationService {
 
         // Check if user name does not exist
         if(customerEntity == null) {
-            throw new AuthenticationFailedException("ATH-001","This username does not exist");
+            throw new AuthenticationFailedException("ATH-001","This contact number has not been registered!");
         }
 
         String encryptedPassword = cryptographyProvider.encrypt(password,customerEntity.getSalt());
@@ -54,7 +54,7 @@ public class AuthenticationService {
 
             return customerAuthToken;
         } else {
-            throw new AuthenticationFailedException("ATH-002","Password failed");
+            throw new AuthenticationFailedException("ATH-002","Invalid Credentials");
         }
 
     }

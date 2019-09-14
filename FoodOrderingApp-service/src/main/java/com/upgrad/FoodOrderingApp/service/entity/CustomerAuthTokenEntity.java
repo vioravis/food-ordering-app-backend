@@ -32,7 +32,7 @@ public class CustomerAuthTokenEntity implements Serializable {
 
     @ManyToOne
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "CUSTOMER_ID")
     private CustomerEntity customer;
 
     @Column(name = "ACCESS_TOKEN")
@@ -72,7 +72,7 @@ public class CustomerAuthTokenEntity implements Serializable {
         return customer;
     }
 
-    public void setCustomer(CustomerEntity user) {
+    public void setCustomer(CustomerEntity customer) {
         this.customer = customer;
     }
 
