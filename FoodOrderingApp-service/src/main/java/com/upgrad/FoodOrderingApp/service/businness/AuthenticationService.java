@@ -66,21 +66,27 @@ public class AuthenticationService {
 
         // Validate if user is signed in or not
         if (customerAuthEntity == null) {
-            throw new AuthorizationFailedException("SGR-001", "User is not Signed in");
+            throw new AuthorizationFailedException("(ATHR-001", "Customer is not Logged in.");
         }
 
 
         final ZonedDateTime lastLoginTime = customerAuthEntity.getLoginAt();
         final ZonedDateTime lastLogoutTime = customerAuthEntity.getLogoutAt();
+        final ZonedDateTime expiryTime = customerAuthEntity.getExpiresAt();
 
         // For previously logged out users, check their logged out times
         // This avoids exceptions during repeated logout calls
         if(lastLogoutTime!=null && lastLogoutTime.isAfter(lastLoginTime)) {
-            throw new AuthorizationFailedException("SGR-001", "User is not Signed in");
+            throw new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint.");
 
         }
 
         final ZonedDateTime now = ZonedDateTime.now();
+
+        if(expiryTime!=null && now.isAfter(expiryTime)) {
+            throw new AuthorizationFailedException("ATH-003", "Your session is expired. Log in again to access this endpoint.");
+
+        }
 
         //Set the new logout time
         customerAuthEntity.setLogoutAt(now);

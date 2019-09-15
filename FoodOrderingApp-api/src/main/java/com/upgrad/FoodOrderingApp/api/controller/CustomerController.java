@@ -98,7 +98,7 @@ public class CustomerController {
         final CustomerEntity customerEntity = customerService.logout(authorization);
 
         //Message for successful Logout
-        LogoutResponse logoutResponse = new LogoutResponse().id(customerEntity.getUuid()).message("SIGNED OUT SUCCESSFULLY");
+        LogoutResponse logoutResponse = new LogoutResponse().id(customerEntity.getUuid()).message("LOGGED OUT SUCCESSFULLY");
 
         return new ResponseEntity<LogoutResponse>(logoutResponse,HttpStatus.OK);
 
