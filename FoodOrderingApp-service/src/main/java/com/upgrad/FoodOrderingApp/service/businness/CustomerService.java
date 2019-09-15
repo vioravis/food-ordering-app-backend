@@ -36,6 +36,11 @@ public class CustomerService {
         return authenticationService.userLogout(authorizationToken);
     }
 
+//    //Service for Customer Update
+//    @Transactional(propagation = Propagation.REQUIRED)
+//    public CustomerEntity customerUpdate(final String authorizationToken) throws AuthorizationFailedException {
+//        return authenticationService.userLogout(authorizationToken);
+//    }
 
 
 }
