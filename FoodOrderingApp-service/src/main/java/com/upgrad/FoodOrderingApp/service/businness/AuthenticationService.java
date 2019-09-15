@@ -22,10 +22,10 @@ public class AuthenticationService {
     @Autowired
     private PasswordCryptographyProvider cryptographyProvider;
 
-    @Autowired
+//    @Autowired
     private CustomerAuthTokenEntity customerAuthTokenEntity;
 
-    @Autowired
+//    @Autowired
     private CustomerEntity customerEntity;
 
     //Service method for authenticaion while signing in
