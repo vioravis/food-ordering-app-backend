@@ -1,6 +1,6 @@
 package com.upgrad.FoodOrderingApp.service.dao;
 
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import org.springframework.stereotype.Repository;
 
@@ -26,9 +26,9 @@ public class CustomerDao {
     }
 
     // Persist authentication details
-    public CustomerAuthTokenEntity createAuthCustomer(CustomerAuthTokenEntity customerAuthTokenEntity) {
-        entityManager.persist(customerAuthTokenEntity);
-        return customerAuthTokenEntity;
+    public CustomerAuthEntity createAuthCustomer(CustomerAuthEntity customerAuthEntity) {
+        entityManager.persist(customerAuthEntity);
+        return customerAuthEntity;
     }
 
     // Get user by UUID
@@ -76,9 +76,9 @@ public class CustomerDao {
     }
 
     // Get authentication token by acesss token
-    public CustomerAuthTokenEntity getCustomerAuthToken(final String accessToken) {
+    public CustomerAuthEntity getCustomerAuthToken(final String accessToken) {
         try {
-            return entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthTokenEntity.class).setParameter("accessToken", accessToken).getSingleResult();
+            return entityManager.createNamedQuery("customerAuthTokenByAccessToken", CustomerAuthEntity.class).setParameter("accessToken", accessToken).getSingleResult();
         } catch (NoResultException nre) {
 
             return null;
@@ -87,9 +87,9 @@ public class CustomerDao {
     }
 
     // Persist the authentication token
-    public CustomerAuthTokenEntity createAuthToken(final CustomerAuthTokenEntity customerAuthTokenEntity) {
-        entityManager.persist(customerAuthTokenEntity);
-        return customerAuthTokenEntity;
+    public CustomerAuthEntity createAuthToken(final CustomerAuthEntity customerAuthEntity) {
+        entityManager.persist(customerAuthEntity);
+        return customerAuthEntity;
     }
 
     // Update an existing user

@@ -2,16 +2,13 @@ package com.upgrad.FoodOrderingApp.service.businness;
 
 
 
-import com.google.common.hash.Hashing;
 import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
+import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
-import org.apache.commons.codec.Charsets;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,14 +27,20 @@ public class CustomerService {
 
     // Service method for signup
     @Transactional(propagation = Propagation.REQUIRED)
-    public CustomerEntity signup(CustomerEntity customerEntity) throws SignUpRestrictedException {
+    public CustomerEntity saveCustomer(CustomerEntity customerEntity) throws SignUpRestrictedException {
         return adminBusinessService.createCustomer(customerEntity);
     }
 
     @Autowired
     private AuthenticationService authenticationService;
 
-    // Service method for signout
+    // Service method for login
+    @Transactional(propagation = Propagation.REQUIRED)
+    public CustomerAuthEntity authenticate(final String contactNumber, final String password) throws AuthenticationFailedException {
+        return authenticationService.authenticate(contactNumber,password);
+    }
+
+    // Service method for logout
     @Transactional(propagation = Propagation.REQUIRED)
     public CustomerEntity logout(final String authorizationToken) throws AuthorizationFailedException {
         return authenticationService.userLogout(authorizationToken);
@@ -48,9 +51,9 @@ public class CustomerService {
 
     // Service method for Password Update
     @Transactional(propagation = Propagation.REQUIRED)
-    public CustomerEntity updatePassword(final String authorization, final String oldPassword, final String newPassword) throws AuthorizationFailedException {
+    public CustomerEntity updateCustomerPassword(final String oldPassword, final String newPassword, final String authorization) throws AuthorizationFailedException {
 
-        CustomerAuthTokenEntity customerAuthEntity = customerDao.getCustomerAuthToken(authorization);
+        CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(authorization);
 
         if(oldPassword == null || oldPassword.isEmpty() || newPassword == null || newPassword.isEmpty()) {
             throw new AuthorizationFailedException("UCR-003", "No field should be empty");
@@ -110,10 +113,11 @@ public class CustomerService {
 
     // Service method for Password Update
     @Transactional(propagation = Propagation.REQUIRED)
+    //
     public CustomerEntity updateCustomer(final String authorization, final String firstName, final String lastName) throws AuthorizationFailedException {
 
         String authorization1 = authorization.split("Bearer ")[1];
-        CustomerAuthTokenEntity customerAuthEntity = customerDao.getCustomerAuthToken(authorization1);
+        CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(authorization1);
 
         // Validate if user is signed in or not
         if (customerAuthEntity == null) {
@@ -146,6 +150,11 @@ public class CustomerService {
 
         return customerAuthEntity.getCustomer();
 
+    }
+
+    @Transactional
+    public CustomerEntity getCustomer(final String customerUuid) {
+        return customerDao.getCustomer(customerUuid);
     }
 
 
