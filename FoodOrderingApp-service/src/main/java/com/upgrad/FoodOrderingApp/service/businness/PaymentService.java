@@ -24,4 +24,8 @@ public class PaymentService {
     public PaymentEntity getPaymentByUuid(final String paymentUuid) {
         return paymentDao.getPaymentByUuid(paymentUuid);
     }
+    @Transactional
+    public List<PaymentEntity> getAllPaymentMethods() {
+        return paymentDao.getAllPaymentMethods();
+    }
 }
