@@ -22,21 +22,26 @@ public class AuthenticationService {
     @Autowired
     private PasswordCryptographyProvider cryptographyProvider;
 
+    @Autowired
+    private CustomerAuthTokenEntity customerAuthTokenEntity;
+
+    @Autowired
+    private CustomerEntity customerEntity;
+
     //Service method for authenticaion while signing in
     @Transactional(propagation = Propagation.REQUIRED)
-    public CustomerAuthTokenEntity authenticate(final String contactNumber, final String password) throws AuthenticationFailedException{
+    public CustomerAuthTokenEntity authenticate(final String contactNumber, final String password) throws AuthenticationFailedException {
         CustomerEntity customerEntity = customerDao.getCustomerByContactNumber(contactNumber);
 
         // Check if user name does not exist
-        if(customerEntity == null) {
-            throw new AuthenticationFailedException("ATH-001","This contact number has not been registered!");
+        if (customerEntity == null) {
+            throw new AuthenticationFailedException("ATH-001", "This contact number has not been registered!");
         }
 
-        String encryptedPassword = cryptographyProvider.encrypt(password,customerEntity.getSalt());
+        String encryptedPassword = cryptographyProvider.encrypt(password, customerEntity.getSalt());
 
         //Check if password matches the password-salt stored in the database
-        if(encryptedPassword.equals(customerEntity.getPassword()))
-        {
+        if (encryptedPassword.equals(customerEntity.getPassword())) {
             JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(encryptedPassword);
             CustomerAuthTokenEntity customerAuthToken = new CustomerAuthTokenEntity();
             customerAuthToken.setCustomer(customerEntity);
@@ -44,7 +49,7 @@ public class AuthenticationService {
             final ZonedDateTime now = ZonedDateTime.now();
             final ZonedDateTime expiresAt = now.plusHours(8);
             customerAuthToken.setUuid(customerEntity.getUuid());
-            customerAuthToken.setAccessToken(jwtTokenProvider.generateToken(customerEntity.getUuid(),now,expiresAt));
+            customerAuthToken.setAccessToken(jwtTokenProvider.generateToken(customerEntity.getUuid(), now, expiresAt));
 
             customerAuthToken.setLoginAt(now);
             customerAuthToken.setExpiresAt(expiresAt);
@@ -54,7 +59,7 @@ public class AuthenticationService {
 
             return customerAuthToken;
         } else {
-            throw new AuthenticationFailedException("ATH-002","Invalid Credentials");
+            throw new AuthenticationFailedException("ATH-002", "Invalid Credentials");
         }
 
     }
@@ -76,14 +81,14 @@ public class AuthenticationService {
 
         // For previously logged out users, check their logged out times
         // This avoids exceptions during repeated logout calls
-        if(lastLogoutTime!=null && lastLogoutTime.isAfter(lastLoginTime)) {
+        if (lastLogoutTime != null && lastLogoutTime.isAfter(lastLoginTime)) {
             throw new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint.");
 
         }
 
         final ZonedDateTime now = ZonedDateTime.now();
 
-        if(expiryTime!=null && now.isAfter(expiryTime)) {
+        if (expiryTime != null && now.isAfter(expiryTime)) {
             throw new AuthorizationFailedException("ATH-003", "Your session is expired. Log in again to access this endpoint.");
 
         }
@@ -94,5 +99,8 @@ public class AuthenticationService {
         return customerAuthEntity.getCustomer();
     }
 
-
+//    @Transactional(propagation = Propagation.REQUIRED)
+//    public CustomerEntity updateCustomer(final String authorizationToken) throws AuthorizationFailedException {
+//
+//    }
 }
