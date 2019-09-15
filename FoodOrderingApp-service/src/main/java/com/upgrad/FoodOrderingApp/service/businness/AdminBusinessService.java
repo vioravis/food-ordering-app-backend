@@ -95,4 +95,8 @@ public class AdminBusinessService {
         return customerDao.createCustomer(customerEntity);
 
     }
+    @Transactional
+    public CustomerEntity getCustomerById(final Integer customerId) {
+        return customerDao.getCustomerById(customerId);
+    }
 }
