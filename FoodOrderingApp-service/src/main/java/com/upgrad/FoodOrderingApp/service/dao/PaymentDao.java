@@ -31,4 +31,12 @@ public class PaymentDao {
             return null;
         }
     }
+    public List<PaymentEntity> getAllPaymentMethods(){
+
+        try {
+            return this.entityManager.createNamedQuery("allPaymentMethods", PaymentEntity.class).getResultList();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
 }

@@ -40,6 +40,16 @@ public class CustomerDao {
             return null;
         }
     }
+    //Get user by id
+    public CustomerEntity getCustomerById(final Integer customerId) {
+        try {
+            return entityManager.createNamedQuery("customerById", CustomerEntity.class).setParameter("id", customerId)
+                    .getSingleResult();
+        } catch(NoResultException nre) {
+            return null;
+        }
+    }
+
 
     // Get user by Username
     public CustomerEntity getCustomerByContactNumber(final String contactNumber) {
