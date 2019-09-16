@@ -14,14 +14,14 @@ import java.time.ZonedDateTime;
 @Table(name = "orders")
 @NamedQueries(
         {
-                @NamedQuery(name = "ordersByUuid",query="select o from OrderEntity o where o.uuid=:uuid"),
-                @NamedQuery(name = "ordersById", query = "select o from OrderEntity o where o.id=:id"),
-                @NamedQuery(name = "ordersByCustomer", query = "select o from OrderEntity o where o.customer=:customer order by o.date desc"),
+                @NamedQuery(name = "ordersByUuid",query="select o from OrdersEntity o where o.uuid=:uuid"),
+                @NamedQuery(name = "ordersById", query = "select o from OrdersEntity o where o.id=:id"),
+                @NamedQuery(name = "ordersByCustomer", query = "select o from OrdersEntity o where o.customer=:customer order by o.date desc"),
         }
 )
 
 
-public class OrderEntity implements Serializable {
+public class OrdersEntity implements Serializable {
 
     @Id
     @Column(name = "ID")

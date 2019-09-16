@@ -44,7 +44,7 @@ public class OrderService {
     }
 
     @Transactional
-    public List<OrderEntity> getCustomerOrders(final String authorizationToken) throws AuthorizationFailedException {
+    public List<OrdersEntity> getCustomerOrders(final String authorizationToken) throws AuthorizationFailedException {
 
         // Gets the customerAuthToken details from customerDao
         CustomerAuthTokenEntity customerAuthTokenEntity = authenticationService.getCustomerAuthToken(authorizationToken);
@@ -56,7 +56,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderEntity saveOrder(OrderEntity ordersEntity, final String authorizationToken)
+    public OrdersEntity saveOrder(OrdersEntity ordersEntity, final String authorizationToken)
             throws AuthorizationFailedException, CouponNotFoundException, AddressNotFoundException, PaymentMethodNotFoundException {
 
         //get the customerAuthToken details from customerDao
