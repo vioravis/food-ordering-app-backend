@@ -51,7 +51,7 @@ public class OrderService {
         // Validates the access token retrieved from database
         authenticationService.validateAccessToken(customerAuthEntity);
 
-        return orderDao.getCustomerOrders(customerAuthEntity.getId().longValue());
+        return orderDao.getCustomerOrders(customerAuthEntity.getCustomer());
     }
 
     @Transactional
@@ -63,11 +63,16 @@ public class OrderService {
 
         // Validates the provided access token
         authenticationService.validateAccessToken(customerAuthEntity);
-
+        if (ordersEntity.getCoupon() == null) {
+            throw new CouponNotFoundException("CPF-002", "No coupon by this id");
+        }
         CouponEntity couponEntity = couponService.getCouponByUuid(ordersEntity.getCoupon().getUuid());
 
         if (couponEntity == null) {
             throw new CouponNotFoundException("CPF-002", "No coupon by this id");
+        }
+        if (ordersEntity.getAddress() == null) {
+            throw new AddressNotFoundException("ANF-003", "No address by this id");
         }
 
         AddressEntity addressEntity = addressService.getAddressById(ordersEntity.getAddress().getId());
@@ -76,7 +81,11 @@ public class OrderService {
             throw new AddressNotFoundException("ANF-003", "No address by this id");
         }
 
-        PaymentEntity paymentEntity = paymentService.getPaymentByUuid(ordersEntity.getUuid());
+        if (ordersEntity.getPayment() ==  null) {
+            throw new PaymentMethodNotFoundException("PNF-002", "No payment method found by this id");
+        }
+
+        PaymentEntity paymentEntity = paymentService.getPaymentByUuid(ordersEntity.getPayment().getUuid());
 
         if (paymentEntity ==  null) {
             throw new PaymentMethodNotFoundException("PNF-002", "No payment method found by this id");
