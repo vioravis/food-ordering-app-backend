@@ -105,7 +105,7 @@ public class CustomerController {
                                                                          @RequestParam String oldPassword,
                                                                          @RequestParam String newPassword) throws AuthorizationFailedException {
 
-        final CustomerEntity customerEntity = customerService.updateCustomerPassword(authorization,oldPassword,newPassword);
+        final CustomerEntity customerEntity = customerService.updateCustomerPassword(oldPassword,newPassword,authorization);
 
         // Message for successful password update
         UpdatePasswordResponse passwordUpdateResponse = new UpdatePasswordResponse().id(customerEntity.getUuid()).status("CUSTOMER PASSWORD UPDATED SUCCESSFULLY");
@@ -122,7 +122,7 @@ public class CustomerController {
 
         final CustomerEntity customerEntity = customerService.updateCustomer(authorization,firstName,lastName);
 
-        // Message for successful password update
+        // Message for successful customer update
         UpdateCustomerResponse customerUpdateResponse = new UpdateCustomerResponse().id(customerEntity.getUuid()).
                                                             firstName(customerEntity.getFirstName()).
                                                             lastName(customerEntity.getLastName()).
