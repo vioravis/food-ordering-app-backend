@@ -2,7 +2,6 @@ package com.upgrad.FoodOrderingApp.service.businness;
 
 
 import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
@@ -10,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.regex.Matcher;
+
 import java.util.regex.Pattern;
 import org.apache.commons.validator.routines.EmailValidator;
 
@@ -94,5 +93,9 @@ public class AdminBusinessService {
 
         return customerDao.createCustomer(customerEntity);
 
+    }
+    @Transactional
+    public CustomerEntity getCustomerById(final Integer customerId) {
+        return customerDao.getCustomerById(customerId);
     }
 }

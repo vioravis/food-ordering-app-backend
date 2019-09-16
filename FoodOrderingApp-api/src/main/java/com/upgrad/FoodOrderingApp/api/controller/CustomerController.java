@@ -3,12 +3,11 @@ package com.upgrad.FoodOrderingApp.api.controller;
 import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.service.businness.AuthenticationService;
 import com.upgrad.FoodOrderingApp.service.businness.CustomerService;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthTokenEntity;
+import com.upgrad.FoodOrderingApp.service.entity.CustomerAuthEntity;
 import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
 import com.upgrad.FoodOrderingApp.service.exception.AuthenticationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SignUpRestrictedException;
-import org.hibernate.sql.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,7 +39,7 @@ public class CustomerController {
 
         customerEntity.setSalt("1234abc");
 
-        final CustomerEntity createdUserEntity = customerService.signup(customerEntity);
+        final CustomerEntity createdUserEntity = customerService.saveCustomer(customerEntity);
 
         //Status for successful user creation
         SignupCustomerResponse signupCustomerResponse = new SignupCustomerResponse().id(createdUserEntity.getUuid()).status("CUSTOMER SUCCESSFULLY REGISTERED");
@@ -69,7 +68,7 @@ public class CustomerController {
 
         String[] decodedArray = decodedText.split(":");
 
-        CustomerAuthTokenEntity customerAuthToken = authenticationService.authenticate(decodedArray[0],decodedArray[1]);
+        CustomerAuthEntity customerAuthToken = authenticationService.authenticate(decodedArray[0],decodedArray[1]);
         CustomerEntity customer = customerAuthToken.getCustomer();
 
         // Message for successful Login
@@ -106,7 +105,7 @@ public class CustomerController {
                                                                          @RequestParam String oldPassword,
                                                                          @RequestParam String newPassword) throws AuthorizationFailedException {
 
-        final CustomerEntity customerEntity = customerService.updatePassword(authorization,oldPassword,newPassword);
+        final CustomerEntity customerEntity = customerService.updateCustomerPassword(authorization,oldPassword,newPassword);
 
         // Message for successful password update
         UpdatePasswordResponse passwordUpdateResponse = new UpdatePasswordResponse().id(customerEntity.getUuid()).status("CUSTOMER PASSWORD UPDATED SUCCESSFULLY");
@@ -114,7 +113,7 @@ public class CustomerController {
         return new ResponseEntity<UpdatePasswordResponse>(passwordUpdateResponse,HttpStatus.OK);
     }
 
-    //Update Customer Password
+    //Update Customer First and Last Name
     @RequestMapping(method=RequestMethod.PUT,path="/customer",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 
     public ResponseEntity<UpdateCustomerResponse> updateCustomerResponse(@RequestHeader("authorization") final String authorization,

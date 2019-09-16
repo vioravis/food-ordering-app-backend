@@ -51,4 +51,10 @@ public class PaymentEntity implements Serializable {
     public void setPaymentName(String paymentName) {
         this.paymentName = paymentName;
     }
+
+    public PaymentEntity(@Size(max = 200) String uuid, String paymentName) {
+        this.uuid = uuid;
+        this.paymentName = paymentName;
+    }
+    public PaymentEntity() {}
 }
