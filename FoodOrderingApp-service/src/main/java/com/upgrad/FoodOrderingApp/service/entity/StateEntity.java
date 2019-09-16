@@ -25,7 +25,6 @@ public class StateEntity implements Serializable {
     @Column(name = "UUID")
     @Size(max = 200)
     private String uuid;
-
     @Column(name = "STATE_NAME")
     @Size(max = 30)
     private String stateName;
