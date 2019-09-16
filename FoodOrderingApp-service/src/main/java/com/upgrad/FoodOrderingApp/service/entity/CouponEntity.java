@@ -25,7 +25,7 @@ public class CouponEntity implements Serializable {
 
     @Column(name = "UUID")
     @Size(max = 200)
-    private UUID uuid;
+    private String uuid;
 
     @Column(name = "COUPON_NAME")
     private String couponName;
@@ -42,11 +42,11 @@ public class CouponEntity implements Serializable {
         this.id = id;
     }
 
-    public UUID getUuid() {
+    public String getUuid() {
         return uuid;
     }
 
-    public void setUuid(UUID uuid) {
+    public void setUuid(String uuid) {
         this.uuid = uuid;
     }
 
@@ -66,7 +66,7 @@ public class CouponEntity implements Serializable {
         this.percent = percent;
     }
 
-    public CouponEntity(@Size(max = 200) UUID uuid, String couponName, @NotNull Integer percent) {
+    public CouponEntity(@Size(max = 200) String uuid, String couponName, @NotNull Integer percent) {
         this.uuid = uuid;
         this.couponName = couponName;
         this.percent = percent;

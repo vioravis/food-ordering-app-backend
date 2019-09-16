@@ -56,7 +56,7 @@ public class OrderController {
             throw new CouponNotFoundException("CPF-001", "No coupon by this name");
         }
 
-        CouponDetailsResponse couponDetailsResponse = new CouponDetailsResponse().id(couponEntity.getUuid())
+        CouponDetailsResponse couponDetailsResponse = new CouponDetailsResponse().id(UUID.fromString(couponEntity.getUuid()))
                 .couponName(couponEntity.getCouponName()).percent(couponEntity.getPercent());
 
         return new ResponseEntity<CouponDetailsResponse>(couponDetailsResponse, HttpStatus.OK);
@@ -86,7 +86,7 @@ public class OrderController {
             CouponEntity couponEntity = couponService.getCouponByCouponId(oe.getCoupon().getId());
 
             OrderListCoupon orderListCoupon = new OrderListCoupon();
-            orderListCoupon.setId(couponEntity.getUuid());
+            orderListCoupon.setId(UUID.fromString(couponEntity.getUuid()));
             orderListCoupon.setCouponName(couponEntity.getCouponName());
             orderListCoupon.setPercent(couponEntity.getPercent());
 
@@ -158,7 +158,7 @@ public class OrderController {
         ordersEntity.setBill(saveOrderRequest.getBill());
         ordersEntity.setDiscount(saveOrderRequest.getDiscount());
 
-        CouponEntity couponEntity = couponService.getCouponByUuid(saveOrderRequest.getCouponId());
+        CouponEntity couponEntity = couponService.getCouponByUuid(saveOrderRequest.getCouponId().toString());
         ordersEntity.setCoupon(couponEntity);
 
         final OrderEntity savedOrdersEntity = orderService.saveOrder(ordersEntity, token);
