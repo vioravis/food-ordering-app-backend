@@ -25,7 +25,10 @@ public class StateEntity implements Serializable {
     @Column(name = "UUID")
     @Size(max = 200)
     private String uuid;
-
+    public StateEntity(String uuid, String name) {
+        this.uuid = uuid;
+        this.stateName = name;
+    }
     @Column(name = "STATE_NAME")
     @Size(max = 30)
     private String stateName;

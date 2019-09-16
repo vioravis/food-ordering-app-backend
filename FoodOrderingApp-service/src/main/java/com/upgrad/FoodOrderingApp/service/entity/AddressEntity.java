@@ -4,6 +4,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -29,8 +30,6 @@ public class AddressEntity implements Serializable {
     @Size(max = 200)
     private String uuid;
 
-    @Column(name = "FLAT_BUIL_NUMBER")
-    private String flatBuilNumber;
 
     @Column(name = "LOCALITY")
     private String locality;
@@ -51,6 +50,28 @@ public class AddressEntity implements Serializable {
     @Column(name="ACTIVE")
     private Integer active;
 
+    @Column(name = "flat_buil_number")
+    @NotNull
+    @Size(max = 255)
+    private String flatBuilNo;
+
+    @Column(name = "pincode")
+    @NotNull
+    @Size(max = 30)
+    private String pincode;
+
+    public AddressEntity() {}
+
+    public AddressEntity(String uuid, String flatBuilNo, String locality, String city, String pincode, StateEntity stateEntity) {
+        this.uuid = uuid;
+        this.flatBuilNo = flatBuilNo;
+        this.locality = locality;
+        this.city = city;
+        this.pincode = pincode;
+        this.state = stateEntity;
+        this.active = 1;
+    }
+
     public long getId() {
         return id;
     }
@@ -65,14 +86,6 @@ public class AddressEntity implements Serializable {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
-    }
-
-    public String getFlatBuilNumber() {
-        return flatBuilNumber;
-    }
-
-    public void setFlatBuilNumber(String flatBuilNumber) {
-        this.flatBuilNumber = flatBuilNumber;
     }
 
     public String getLocality() {
@@ -113,5 +126,21 @@ public class AddressEntity implements Serializable {
 
     public void setActive(Integer active) {
         this.active = active;
+    }
+
+    public String getFlatBuilNo() {
+        return flatBuilNo;
+    }
+
+    public void setFlatBuilNo(String flatNumber) {
+        this.flatBuilNo = flatNumber;
+    }
+
+    public String getPincode() {
+        return pincode;
+    }
+
+    public void setPincode(String pincode) {
+        this.pincode = pincode;
     }
 }
