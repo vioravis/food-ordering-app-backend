@@ -70,11 +70,11 @@ public class OrderController {
         String token = getAccessToken(authorization);
 
         // Gets all the past orders of the customer
-        final List<OrdersEntity> ordersEntityList = orderService.getCustomerOrders(token);
+        final List<OrderEntity> ordersEntityList = orderService.getCustomerOrders(token);
 
         List<OrderList> orderDetailsList = new ArrayList<OrderList>();
 
-        for (OrdersEntity oe: ordersEntityList) {
+        for (OrderEntity oe: ordersEntityList) {
             OrderList detail = new OrderList();
 
             detail.setId(UUID.fromString(oe.getUuid()));
@@ -147,7 +147,7 @@ public class OrderController {
             throws AuthorizationFailedException, CouponNotFoundException, AddressNotFoundException, PaymentMethodNotFoundException {
 
         String token = getAccessToken(authorization);
-        final OrdersEntity ordersEntity = new OrdersEntity();
+        final OrderEntity ordersEntity = new OrderEntity();
 
         AddressEntity addressEntity = addressService.getAddressById(Long.parseLong(saveOrderRequest.getAddressId()));
         ordersEntity.setAddress(addressEntity);
@@ -161,7 +161,7 @@ public class OrderController {
         CouponEntity couponEntity = couponService.getCouponByUuid(saveOrderRequest.getCouponId());
         ordersEntity.setCoupon(couponEntity);
 
-        final OrdersEntity savedOrdersEntity = orderService.saveOrder(ordersEntity, token);
+        final OrderEntity savedOrdersEntity = orderService.saveOrder(ordersEntity, token);
         SaveOrderResponse saveOrderResponse = new SaveOrderResponse().id(savedOrdersEntity.getUuid())
                 .status("ORDER SUCCESSFULLY PLACED");
 

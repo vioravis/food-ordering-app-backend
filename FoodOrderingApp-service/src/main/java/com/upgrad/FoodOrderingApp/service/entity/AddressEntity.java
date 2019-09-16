@@ -123,7 +123,5 @@ public class AddressEntity implements Serializable {
         this.pinCode = pinCode;
         this.state = state;
     }
-    public AddressEntity() {
-
-    }
+    public AddressEntity() {}
 }
