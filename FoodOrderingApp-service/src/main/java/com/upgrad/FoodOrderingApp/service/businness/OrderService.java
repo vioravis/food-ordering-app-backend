@@ -31,7 +31,7 @@ public class OrderService {
     private PaymentService paymentService;
 
     @Transactional
-    public CouponEntity getCouponByName(String couponName, final String authorizationToken) throws AuthorizationFailedException {
+    public CouponEntity getCouponByCouponName(String couponName, final String authorizationToken) throws AuthorizationFailedException {
 
         // Gets the customerAuthToken details from customerDao
         CustomerAuthEntity customerAuthEntity = authenticationService.getCustomerAuthToken(authorizationToken);
@@ -43,7 +43,7 @@ public class OrderService {
     }
 
     @Transactional
-    public List<OrdersEntity> getCustomerOrders(final String authorizationToken) throws AuthorizationFailedException {
+    public List<OrderEntity> getCustomerOrders(final String authorizationToken) throws AuthorizationFailedException {
 
         // Gets the customerAuthToken details from customerDao
         CustomerAuthEntity customerAuthEntity = authenticationService.getCustomerAuthToken(authorizationToken);
@@ -55,7 +55,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrdersEntity saveOrder(OrdersEntity ordersEntity, final String authorizationToken)
+    public OrderEntity saveOrder(OrderEntity orderEntity, final String authorizationToken)
             throws AuthorizationFailedException, CouponNotFoundException, AddressNotFoundException, PaymentMethodNotFoundException {
 
         //get the customerAuthToken details from customerDao
@@ -64,24 +64,24 @@ public class OrderService {
         // Validates the provided access token
         authenticationService.validateAccessToken(customerAuthEntity);
 
-        CouponEntity couponEntity = couponService.getCouponByUuid(ordersEntity.getCoupon().getUuid());
+        CouponEntity couponEntity = couponService.getCouponByUuid(orderEntity.getCoupon().getUuid());
 
         if (couponEntity == null) {
             throw new CouponNotFoundException("CPF-002", "No coupon by this id");
         }
 
-        AddressEntity addressEntity = addressService.getAddressById(ordersEntity.getAddress().getId());
+        AddressEntity addressEntity = addressService.getAddressById(orderEntity.getAddress().getId());
 
         if (addressEntity == null) {
             throw new AddressNotFoundException("ANF-003", "No address by this id");
         }
 
-        PaymentEntity paymentEntity = paymentService.getPaymentByUuid(ordersEntity.getUuid());
+        PaymentEntity paymentEntity = paymentService.getPaymentByUuid(orderEntity.getUuid());
 
         if (paymentEntity ==  null) {
             throw new PaymentMethodNotFoundException("PNF-002", "No payment method found by this id");
         }
 
-        return orderDao.saveOrder(ordersEntity);
+        return orderDao.saveOrder(orderEntity);
     }
 }

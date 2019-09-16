@@ -114,4 +114,16 @@ public class AddressEntity implements Serializable {
     public void setActive(Integer active) {
         this.active = active;
     }
+
+    public AddressEntity(@Size(max = 200) String uuid, String flatBuilNumber, String locality, @Size(max = 30) String city, @Size(max = 30) String pinCode, StateEntity state) {
+        this.uuid = uuid;
+        this.flatBuilNumber = flatBuilNumber;
+        this.locality = locality;
+        this.city = city;
+        this.pinCode = pinCode;
+        this.state = state;
+    }
+    public AddressEntity() {
+
+    }
 }
