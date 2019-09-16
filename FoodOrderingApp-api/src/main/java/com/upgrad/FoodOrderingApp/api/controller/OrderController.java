@@ -70,11 +70,11 @@ public class OrderController {
         String token = getAccessToken(authorization);
 
         // Gets all the past orders of the customer
-        final List<OrderEntity> orderEntityList = orderService.getCustomerOrders(token);
+        final List<OrdersEntity> ordersEntityList = orderService.getCustomerOrders(token);
 
         List<OrderList> orderDetailsList = new ArrayList<OrderList>();
 
-        for (OrderEntity oe: orderEntityList) {
+        for (OrdersEntity oe: ordersEntityList) {
             OrderList detail = new OrderList();
 
             detail.setId(UUID.fromString(oe.getUuid()));
@@ -147,22 +147,22 @@ public class OrderController {
             throws AuthorizationFailedException, CouponNotFoundException, AddressNotFoundException, PaymentMethodNotFoundException {
 
         String token = getAccessToken(authorization);
-        final OrderEntity orderEntity = new OrderEntity();
+        final OrdersEntity ordersEntity = new OrdersEntity();
 
         AddressEntity addressEntity = addressService.getAddressById(Long.parseLong(saveOrderRequest.getAddressId()));
-        orderEntity.setAddress(addressEntity);
+        ordersEntity.setAddress(addressEntity);
 
         PaymentEntity paymentEntity = paymentService.getPaymentByUuid(saveOrderRequest.getPaymentId().toString());
-        orderEntity.setPayment(paymentEntity);
+        ordersEntity.setPayment(paymentEntity);
 
-        orderEntity.setBill(saveOrderRequest.getBill());
-        orderEntity.setDiscount(saveOrderRequest.getDiscount());
+        ordersEntity.setBill(saveOrderRequest.getBill());
+        ordersEntity.setDiscount(saveOrderRequest.getDiscount());
 
         CouponEntity couponEntity = couponService.getCouponByUuid(saveOrderRequest.getCouponId());
-        orderEntity.setCoupon(couponEntity);
+        ordersEntity.setCoupon(couponEntity);
 
-        final OrderEntity savedOrderEntity = orderService.saveOrder(orderEntity, token);
-        SaveOrderResponse saveOrderResponse = new SaveOrderResponse().id(savedOrderEntity.getUuid())
+        final OrdersEntity savedOrdersEntity = orderService.saveOrder(ordersEntity, token);
+        SaveOrderResponse saveOrderResponse = new SaveOrderResponse().id(savedOrdersEntity.getUuid())
                 .status("ORDER SUCCESSFULLY PLACED");
 
         return new ResponseEntity<SaveOrderResponse>(saveOrderResponse, HttpStatus.OK);

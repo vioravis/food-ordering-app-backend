@@ -21,7 +21,7 @@ import java.time.ZonedDateTime;
 )
 
 
-public class OrderEntity implements Serializable {
+public class OrdersEntity implements Serializable {
 
     @Id
     @Column(name = "ID")
@@ -147,9 +147,9 @@ public class OrderEntity implements Serializable {
     public void setRestaurant(RestaurantEntity restaurant) {
         this.restaurant = restaurant;
     }
-    public OrderEntity() {}
+    public OrdersEntity() {}
 
-    public OrderEntity(String uuid, @NotNull BigDecimal bill, CouponEntity coupon, BigDecimal discount, @NotNull ZonedDateTime date, PaymentEntity payment, CustomerEntity customer, AddressEntity address, RestaurantEntity restaurant) {
+    public OrdersEntity(String uuid, @NotNull BigDecimal bill, CouponEntity coupon, BigDecimal discount, @NotNull ZonedDateTime date, PaymentEntity payment, CustomerEntity customer, AddressEntity address, RestaurantEntity restaurant) {
         this.uuid = uuid;
         this.bill = bill;
         this.coupon = coupon;

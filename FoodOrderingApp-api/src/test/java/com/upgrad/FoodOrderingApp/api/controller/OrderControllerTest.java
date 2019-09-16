@@ -83,7 +83,7 @@ public class OrderControllerTest {
         when(mockCouponService.getCouponByCouponId(saveOrderRequest.getCouponId().toString()))
                 .thenReturn(new CouponEntity());
 
-        final OrderEntity orderEntity = new OrderEntity();
+        final OrdersEntity orderEntity = new OrdersEntity();
         final String orderId = UUID.randomUUID().toString();
         orderEntity.setUuid(orderId);
         when(mockOrderService.saveOrder(any())).thenReturn(orderEntity);
@@ -367,7 +367,7 @@ public class OrderControllerTest {
         when(mockCustomerService.getCustomer("database_accesstoken2"))
                 .thenReturn(customerEntity);
 
-        final OrderEntity orderEntity = getOrderEntity(customerEntity);
+        final OrdersEntity orderEntity = getOrderEntity(customerEntity);
         when(mockOrderService.getOrdersByCustomers(customerId))
                 .thenReturn(Collections.singletonList(orderEntity));
 
@@ -584,7 +584,7 @@ public class OrderControllerTest {
         return request;
     }
 
-    private OrderEntity getOrderEntity(final CustomerEntity customerEntity) {
+    private OrdersEntity getOrderEntity(final CustomerEntity customerEntity) {
         final String stateId = UUID.randomUUID().toString();
         final StateEntity stateEntity = new StateEntity(stateId, "someState");
 
@@ -610,7 +610,7 @@ public class OrderControllerTest {
 
 
         final String orderId = UUID.randomUUID().toString();
-        return new OrderEntity(orderId, new BigDecimal(200.50), couponEntity, new BigDecimal(10.0),
+        return new OrdersEntity(orderId, new BigDecimal(200.50), couponEntity, new BigDecimal(10.0),
                 ZonedDateTime.now(), paymentEntity, customerEntity, addressEntity, restaurantEntity);
     }
 
