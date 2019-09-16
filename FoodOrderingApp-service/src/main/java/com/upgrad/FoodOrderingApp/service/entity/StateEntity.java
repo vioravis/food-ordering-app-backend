@@ -5,7 +5,7 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "customer")
+@Table(name = "state")
 @NamedQueries(
         {
                 @NamedQuery(name = "allStates", query = "select s from StateEntity s"),
