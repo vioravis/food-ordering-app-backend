@@ -3,10 +3,8 @@ package com.upgrad.FoodOrderingApp.api.controller;
 
 import com.upgrad.FoodOrderingApp.api.model.*;
 import com.upgrad.FoodOrderingApp.service.businness.*;
-import com.upgrad.FoodOrderingApp.service.entity.AddressEntity;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerAddressEntity;
-import com.upgrad.FoodOrderingApp.service.entity.CustomerEntity;
-import com.upgrad.FoodOrderingApp.service.entity.StateEntity;
+import com.upgrad.FoodOrderingApp.service.dao.CustomerDao;
+import com.upgrad.FoodOrderingApp.service.entity.*;
 import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.SaveAddressException;
@@ -16,31 +14,60 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
 import java.util.*;
 
-//RestController annotation specifies that this class represents a REST API(equivalent of @Controller + @ResponseBody)
 @RestController
-//"@CrossOrigin” annotation enables cross-origin requests for all methods in that specific controller class.
 @CrossOrigin
 @RequestMapping("/")
 public class AddressController {
 
-    //Required services are autowired to enable access to methods defined in respective Business services
+
     @Autowired
     private AddressService addressService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private CustomerDao customerDao;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
 
-
-    //saveaddress  endpoint requests for all the attributes in “SaveAddressRequest” about the customer and saves the address of a customer successfully.
-    //PLEASE NOTE @RequestBody(required = false) inside saveaddress function will disable parameters in request body in request model.
     @RequestMapping(method = RequestMethod.POST, path = "/address", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<SaveAddressResponse> saveaddress(@RequestBody(required = false) final SaveAddressRequest saveAddressRequest,
+    public ResponseEntity<SaveAddressResponse> saveAddress(final SaveAddressRequest saveAddressRequest,
                                                            @RequestHeader("accessToken") final String accessToken) throws AuthorizationFailedException, SaveAddressException, AddressNotFoundException {
 
         String [] bearerToken = accessToken.split("Bearer ");
-        final CustomerEntity customerEntity = customerService.getCustomer(bearerToken[1]);
+
+        String authorization1 = accessToken.split("Bearer ")[1];
+        CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(authorization1);
+
+        // Validate if user is signed in or not
+        if (customerAuthEntity == null) {
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
+        }
+
+        final ZonedDateTime lastLoginTime = customerAuthEntity.getLoginAt();
+        final ZonedDateTime lastLogoutTime = customerAuthEntity.getLogoutAt();
+        final ZonedDateTime expiryTime = customerAuthEntity.getExpiresAt();
+
+        // For previously logged out users, check their logged out times
+        // This avoids exceptions during repeated logout calls
+        if (lastLogoutTime != null && lastLogoutTime.isAfter(lastLoginTime)) {
+            throw new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint.");
+
+        }
+
+        final ZonedDateTime now = ZonedDateTime.now();
+
+        if (expiryTime != null && now.isAfter(expiryTime)) {
+            throw new AuthorizationFailedException("ATH-003", "Your session is expired. Log in again to access this endpoint.");
+
+        }
+
+
+        final CustomerEntity customerEntity = customerAuthEntity.getCustomer();
         final StateEntity stateEntity = addressService.getStateByUUID(saveAddressRequest.getStateUuid());
         final AddressEntity addressEntity= new AddressEntity();
 
@@ -69,10 +96,36 @@ public class AddressController {
     /*WORK IN PROGRESS*/
     //getallsavedaddresses endpoint retrieves all the addresses of a valid customer present in the database
     @RequestMapping(method = RequestMethod.GET, path = "/address/customer",  produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<AddressListResponse> getallsavedaddresses(@RequestHeader("accessToken") final String accessToken) throws AuthorizationFailedException  {
+    public ResponseEntity<AddressListResponse> getAllAddress(@RequestHeader("accessToken") final String accessToken) throws AuthorizationFailedException  {
 
         String [] bearerToken = accessToken.split("Bearer ");
-        final CustomerEntity customerEntity = customerService.getCustomer(bearerToken[1]);
+        CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(bearerToken[1]);
+
+        // Validate if user is signed in or not
+        if (customerAuthEntity == null) {
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
+        }
+
+        final ZonedDateTime lastLoginTime = customerAuthEntity.getLoginAt();
+        final ZonedDateTime lastLogoutTime = customerAuthEntity.getLogoutAt();
+        final ZonedDateTime expiryTime = customerAuthEntity.getExpiresAt();
+
+        // For previously logged out users, check their logged out times
+        // This avoids exceptions during repeated logout calls
+        if (lastLogoutTime != null && lastLogoutTime.isAfter(lastLoginTime)) {
+            throw new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint.");
+
+        }
+
+        final ZonedDateTime now = ZonedDateTime.now();
+
+        // Validate if user session expired
+        if (expiryTime != null && now.isAfter(expiryTime)) {
+            throw new AuthorizationFailedException("ATH-003", "Your session is expired. Log in again to access this endpoint.");
+
+        }
+
+        final CustomerEntity customerEntity = customerAuthEntity.getCustomer();
         final List<CustomerAddressEntity> customerAddressesListByCustomerId = addressService.getAllCustomerAddressByCustomerId(customerEntity);
 
         AddressList addressList =new AddressList();
@@ -104,11 +157,40 @@ public class AddressController {
                                                                @RequestHeader("accessToken") final String accessToken) throws AuthorizationFailedException, AddressNotFoundException {
 
         String [] bearerToken = accessToken.split("Bearer ");
-        final CustomerEntity signedinCustomerEntity = customerService.getCustomer(bearerToken[1]);
+        CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(bearerToken[1]);
+
+        // Validate if user is signed in or not
+        if (customerAuthEntity == null) {
+            throw new AuthorizationFailedException("ATHR-001", "Customer is not Logged in.");
+        }
+
+        final ZonedDateTime lastLoginTime = customerAuthEntity.getLoginAt();
+        final ZonedDateTime lastLogoutTime = customerAuthEntity.getLogoutAt();
+        final ZonedDateTime expiryTime = customerAuthEntity.getExpiresAt();
+
+        // For previously logged out users, check their logged out times
+        // This avoids exceptions during repeated logout calls
+        if (lastLogoutTime != null && lastLogoutTime.isAfter(lastLoginTime)) {
+            throw new AuthorizationFailedException("ATHR-002", "Customer is logged out. Log in again to access this endpoint.");
+
+        }
+
+        final ZonedDateTime now = ZonedDateTime.now();
+
+        // Validate if user session expired
+        if (expiryTime != null && now.isAfter(expiryTime)) {
+            throw new AuthorizationFailedException("ATH-003", "Your session is expired. Log in again to access this endpoint.");
+
+        }
+
+        //CustomerAuthEntity customerAuthEntity = customerDao.getCustomerAuthToken(bearerToken[1]);
+        final CustomerEntity customerEntity = customerAuthEntity.getCustomer();
+
+//        final CustomerEntity signedinCustomerEntity = customerService.getCustomer(bearerToken[1]);
         final AddressEntity addressEntityToDelete=addressService.getAddressByAddressUuid(addressUuid);
-        final CustomerAddressEntity customerAddressEntity=addressService.getCustomerIdByAddressId(addressEntityToDelete.getId());
+        final CustomerAddressEntity customerAddressEntity=addressService.getCustAddressByCustIdAddressId(customerAuthEntity.getCustomer(),addressUuid);
         final CustomerEntity ownerofAddressEntity=customerAddressEntity.getCustomer();
-        final String Uuid = addressService.deleteAddress(addressEntityToDelete,signedinCustomerEntity,ownerofAddressEntity);
+        final String Uuid = addressService.deleteAddress(addressEntityToDelete,customerEntity,ownerofAddressEntity);
 
         DeleteAddressResponse deleteAddressResponse = new DeleteAddressResponse()
                 .id(UUID.fromString(Uuid))
@@ -119,7 +201,7 @@ public class AddressController {
 
     //getallstates endpoint retrieves all the states present in the database
     @RequestMapping(method = RequestMethod.GET, path = "/states",  produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity getallstates(){
+    public ResponseEntity getAllStates(){
         return new ResponseEntity<>(addressService.getAllStates(), HttpStatus.OK);
     }
 

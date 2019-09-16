@@ -110,4 +110,9 @@ public class AddressService {
     public List<CustomerAddressEntity> getAllCustomerAddressByCustomerId(final CustomerEntity customerEntity) {
         return customerAddressDao.getCustomerAddressesListByCustomerId(customerEntity);
     }
+
+    public CustomerAddressEntity getCustAddressByCustIdAddressId(final CustomerEntity customerEntity, final String addressUuid) {
+        AddressEntity addressEntity = addressDao.getAddressByAddressUuid(addressUuid);
+        return customerAddressDao.getCustAddressByCustIdAddressId(customerEntity,addressEntity);
+    }
 }
