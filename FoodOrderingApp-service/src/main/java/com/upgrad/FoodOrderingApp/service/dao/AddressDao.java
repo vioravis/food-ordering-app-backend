@@ -24,12 +24,11 @@ public class AddressDao {
         }
     }
 
-    //saves the customer address information of the created address record  in the database
     public AddressEntity createAddress(AddressEntity addressEntity) {
         this.entityManager.persist(addressEntity);
         return addressEntity;
     }
-    //creates a customerAddress record
+
     public CustomerAddressEntity createCustomerAddress(CustomerAddressEntity customerAddressEntity) {
         this.entityManager.persist(customerAddressEntity);
         return customerAddressEntity;
@@ -43,7 +42,6 @@ public class AddressDao {
         }
     }
 
-    //retrieves all the saved addresses
     public List<AddressEntity> getAllSavedAddresses(){
 
         try {

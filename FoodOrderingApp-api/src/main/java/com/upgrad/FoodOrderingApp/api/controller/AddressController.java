@@ -93,8 +93,8 @@ public class AddressController {
 
     }
 
-    /*WORK IN PROGRESS*/
-    //getallsavedaddresses endpoint retrieves all the addresses of a valid customer present in the database
+
+    //Get add addresses for a customer
     @RequestMapping(method = RequestMethod.GET, path = "/address/customer",  produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AddressListResponse> getAllAddress(@RequestHeader("accessToken") final String accessToken) throws AuthorizationFailedException  {
 
@@ -152,6 +152,7 @@ public class AddressController {
         return new ResponseEntity<AddressListResponse>(addressListResponse,HttpStatus.OK);
     }
 
+    //Delete address of a customer
     @RequestMapping(method= RequestMethod.DELETE,path="/address/{address_id}",produces= MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<DeleteAddressResponse> deleteAddress(@PathVariable("address_id") final String addressUuid,
                                                                @RequestHeader("accessToken") final String accessToken) throws AuthorizationFailedException, AddressNotFoundException {
@@ -199,7 +200,7 @@ public class AddressController {
     }
 
 
-    //getallstates endpoint retrieves all the states present in the database
+    //Get all states
     @RequestMapping(method = RequestMethod.GET, path = "/states",  produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity getAllStates(){
         return new ResponseEntity<>(addressService.getAllStates(), HttpStatus.OK);
