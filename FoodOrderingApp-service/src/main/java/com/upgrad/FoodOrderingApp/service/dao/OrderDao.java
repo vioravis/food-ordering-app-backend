@@ -1,7 +1,6 @@
 package com.upgrad.FoodOrderingApp.service.dao;
 
 import com.upgrad.FoodOrderingApp.service.entity.CouponEntity;
-import com.upgrad.FoodOrderingApp.service.entity.OrderItemEntity;
 import com.upgrad.FoodOrderingApp.service.entity.OrdersEntity;
 import org.springframework.stereotype.Repository;
 

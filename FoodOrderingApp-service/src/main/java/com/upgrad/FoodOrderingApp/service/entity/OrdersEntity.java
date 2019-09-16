@@ -147,4 +147,17 @@ public class OrdersEntity implements Serializable {
     public void setRestaurant(RestaurantEntity restaurant) {
         this.restaurant = restaurant;
     }
+    public OrdersEntity() {}
+
+    public OrdersEntity(String uuid, @NotNull BigDecimal bill, CouponEntity coupon, BigDecimal discount, @NotNull ZonedDateTime date, PaymentEntity payment, CustomerEntity customer, AddressEntity address, RestaurantEntity restaurant) {
+        this.uuid = uuid;
+        this.bill = bill;
+        this.coupon = coupon;
+        this.discount = discount;
+        this.date = date;
+        this.payment = payment;
+        this.customer = customer;
+        this.address = address;
+        this.restaurant = restaurant;
+    }
 }

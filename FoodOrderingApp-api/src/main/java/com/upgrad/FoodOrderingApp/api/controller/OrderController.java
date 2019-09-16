@@ -7,7 +7,6 @@ import com.upgrad.FoodOrderingApp.service.exception.AddressNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.AuthorizationFailedException;
 import com.upgrad.FoodOrderingApp.service.exception.CouponNotFoundException;
 import com.upgrad.FoodOrderingApp.service.exception.PaymentMethodNotFoundException;
-import org.hibernate.internal.CriteriaImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,7 +50,7 @@ public class OrderController {
             throw new CouponNotFoundException("CPF-002", "Coupon name field should not be empty");
         }
 
-        CouponEntity couponEntity = orderService.getCouponByName(couponName, token);
+        CouponEntity couponEntity = orderService.getCouponByCouponName(couponName, token);
 
         if (couponEntity == null) {
             throw new CouponNotFoundException("CPF-001", "No coupon by this name");
@@ -84,7 +83,7 @@ public class OrderController {
             detail.setDate(oe.getDate().toString());
 
             // Getting coupon details of the order and adding to details
-            CouponEntity couponEntity = couponService.getCouponById(oe.getCoupon().getId());
+            CouponEntity couponEntity = couponService.getCouponByCouponId(oe.getCoupon().getId());
 
             OrderListCoupon orderListCoupon = new OrderListCoupon();
             orderListCoupon.setId(couponEntity.getUuid());
@@ -162,8 +161,8 @@ public class OrderController {
         CouponEntity couponEntity = couponService.getCouponByUuid(saveOrderRequest.getCouponId());
         ordersEntity.setCoupon(couponEntity);
 
-        final OrdersEntity savedOrderEntity = orderService.saveOrder(ordersEntity, token);
-        SaveOrderResponse saveOrderResponse = new SaveOrderResponse().id(savedOrderEntity.getUuid())
+        final OrdersEntity savedOrdersEntity = orderService.saveOrder(ordersEntity, token);
+        SaveOrderResponse saveOrderResponse = new SaveOrderResponse().id(savedOrdersEntity.getUuid())
                 .status("ORDER SUCCESSFULLY PLACED");
 
         return new ResponseEntity<SaveOrderResponse>(saveOrderResponse, HttpStatus.OK);
